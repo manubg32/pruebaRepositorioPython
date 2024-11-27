@@ -1,16 +1,62 @@
-# This is a sample Python script.
+import pygame
 
-# Press Mayús+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+from config import config
+from pantalla_juego import pantalla_juego
+from pantalla_principal import pantalla_principal
+
+if __name__ == "__main__":
+    # Inicializar Pygame
+    pygame.init()
+
+    config = config()
+
+    # Configuración de la pantalla y los colores
+    ANCHO, ALTO = 600, 400
+    pantalla = pygame.display.set_mode((ANCHO, ALTO))
+    pygame.display.set_caption("Python")
+    logo = pygame.image.load("src/logo.png")
+    pygame.display.set_icon(logo)
+
+    # Reloj para controlar FPS
+    clock = pygame.time.Clock()
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+    # Creamos objeto pantalla principal
+    pp = pantalla_principal(config)
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+    # Función principal del juego
+    def menu():
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+        pantalla_actual = pp
+
+        running = True
+
+        while running:
+
+            # Captura de eventos
+            pantalla_actual.gestion_eventos(pygame.event.get())
+
+            # Dibujar en la pantalla
+            nueva = pantalla_actual.dibujar(pantalla)
+
+            if nueva == 1:
+                pantalla_actual = pantalla_principal(config)
+            elif nueva == 2:
+                pantalla_actual = pantalla_juego(config)
+
+            # Controlar FPS
+            if config.dificultad == 400:
+                FPS = 6
+            elif config.dificultad == 500:
+                FPS = 10
+            else:
+                FPS = 15
+
+            clock.tick(FPS)
+
+        pygame.quit()
+
+
+    # Ejecutar el juego
+    menu()
